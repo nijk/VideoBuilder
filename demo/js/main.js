@@ -1,4 +1,5 @@
 (function() {
+  var VideoBuilder = window.returnExports.VideoBuilder;
 	var BOX_SIZE_BASE = 28;
 	var jQuery = Zepto;
 
@@ -256,12 +257,25 @@
 	
 	function finishFrames() {
 		renderProgress(bxs.g, 'Ready for download!');
-		mBuilder.finish(function(generatedURL) {
-			updateLink(generatedURL);
+		mBuilder.finish(function(blob) {
+      downloadFile(blob, 'movie.avi');
 		});
 		running = false;
 		currentText = null;
 	}
+
+	function downloadFile(blob, name) {
+	  if (window.navigator.msSaveOrOpenBlob) {
+      window.navigator.msSaveOrOpenBlob(blob, name);
+    } else {
+      var downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(blob);
+      downloadLink.download = name;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
+  }
 
 	function renderProgress(g, msg) {
 	
@@ -295,45 +309,6 @@
 			bxs.addFillPattern(TextureList[5]);
 			bxs.render();
 			setupMain();
-/*			
-			bxs.putGlyphBoxes(1, 20, 50, 16);
-			bxs.putGlyphBoxes(9, 130, 50, 16);
-			bxs.putGlyphBoxes(22, 240, 50, 16);
-			bxs.putGlyphBoxes(24, 350, 50, 16);
-			
-			var count = 120;
-			function advance(){
-				bxs.tick();g
-				if (--count > 0) {
-					setTimeout(advance, 10);
-				}
-			}
-		
-			advance();
-*/
 		});
-
-/*
-		var cv = document.createElement('canvas');
-		var g = cv.getContext('2d');
-		cv.width  = 320;
-		cv.height = 240;
-		document.body.appendChild(cv);
-		
-		for (var i = 0;i < 60;i++) {
-			g.fillStyle = "#ff"+(i%10);
-			g.fillRect(0, 0, 320, 240);
-			
-			g.fillStyle = "#000";
-			g.fillRect(i+4, 20, 32, 32);
-			
-			jb.addCanvasFrame(cv);
-		}
-
-		jb.finish();
-		jb.build(function(generatedURL) {
-			console.log(generatedURL)
-		});
-		*/
 	};
 })();
