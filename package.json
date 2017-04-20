@@ -2,7 +2,7 @@
   "name": "video-builder",
   "version": "1.0.0",
   "description": "Generate MotionJPEG from Canvas via JavaScript",
-  "main": "main.js",
+  "main": "video-builder.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
