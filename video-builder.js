@@ -7,22 +7,20 @@
 
 'use strict';
 
-// if the module has no dependencies, the above pattern can be simplified to
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define([], factory);
+    define(['b'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // Node. Does not work with strict CommonJS, but
     // only CommonJS-like environments that support module.exports,
     // like Node.
-    module.exports = factory();
+    module.exports = factory(require('base64'));
   } else {
     // Browser globals (root is window)
-    root.returnExports = factory();
-
+    root.returnExports = factory(root.base64);
   }
-}(this, function () {
+}(this, function (base64) {
   var AVIF_HASINDEX = 0x00000010
   var AVIIF_KEYFRAME = 0x00000010
   var RateBase = 1000000
