@@ -15,7 +15,7 @@
     // Node. Does not work with strict CommonJS, but
     // only CommonJS-like environments that support module.exports,
     // like Node.
-    module.exports = factory(require('base64'));
+    module.exports = factory(require('./base64'));
   } else {
     // Browser globals (root is window)
     root.returnExports = factory(root.base64);
