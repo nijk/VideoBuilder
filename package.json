@@ -1,0 +1,19 @@
+{
+  "name": "video-builder",
+  "version": "1.0.0",
+  "description": "Generate MotionJPEG from Canvas via JavaScript",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nijk/VideoBuilder.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nijk/VideoBuilder/issues"
+  },
+  "homepage": "https://github.com/nijk/VideoBuilder#readme"
+}
