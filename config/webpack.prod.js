@@ -10,7 +10,7 @@ module.exports = Object.assign({}, baseConfig, {
     publicPath: '/',
     filename: 'main.js',
     libraryTarget: 'umd',
-  },/*
+  },
   plugins: baseConfig.plugins.concat([
     new webpack.optimize.UglifyJsPlugin({
       sourceMap: true,
@@ -19,5 +19,5 @@ module.exports = Object.assign({}, baseConfig, {
         drop_console: false,
       }
     }),
-  ])*/
+  ]),
 });

@@ -5,8 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "webpack-dev-server --host 0.0.0.0 --port 3001 --progress --colors --hot --config config/webpack.dev.js",
-    "build": "webpack --progress --colors --config config/webpack.dev.js",
-    "build:prod": "webpack --config config/webpack.prod.js",
+    "build": "NODE_ENV=production webpack -p --config config/webpack.prod.js",
     "demo": "webpack-dev-server --host 0.0.0.0 --port 3001 --progress --colors --hot --config config/webpack.demo.js",
     "test": "babel-node tests/run.js"
   },
