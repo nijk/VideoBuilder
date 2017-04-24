@@ -17,3 +17,6 @@ node_modules
 
 # IDE
 .idea
+
+# Build
+dist/
