@@ -30,18 +30,8 @@ module.exports = {
         }
       },
       {
-        test: /\.css$/,
-        loader: ExtractTextPlugin.extract({
-          fallback: 'style',
-          use: {
-            loader: 'css',
-            options: {
-              modules: true,
-              importLoaders: true,
-              localIdentName: '[name]__[local]___[hash:base64:5]',
-            }
-          }
-        }),
+        test: /\.s?css$/,
+        loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader!sass-loader'}),
       },
     ],
   },
@@ -63,9 +53,6 @@ module.exports = {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),
       },
     }),
-    /*new webpack.ProvidePlugin({
-      Promise: 'imports?this=>global!exports?global.Promise!es6-promise'
-    }),*/
     new ExtractTextPlugin({ filename: 'dist/[NAME].css', allChunks: true }),
   ],
 };

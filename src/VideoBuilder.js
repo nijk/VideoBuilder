@@ -3,37 +3,44 @@ import AVIBuilder from './AVIBuilder';
 import BlobBuilder from './BlobBuilder';
 
 export default class VideoBuilder {
-  constructor (videoOpts = {}) {
+  constructor (win = window, videoOpts = {}) {
     const {
       fps = 30,
       width = 0,
       height = 0,
+      name = 'download',
     } = videoOpts;
 
-    const encodingOpts = {
-      RateBase: undefined, // @fixme
-      AVIF_HASINDEX: undefined, // @fixme
-    };
+    this.window = win;
+    this.movieName = name;
+    this.fps = fps;
+    this.width = width;
+    this.height = height;
 
-    this.movieDesc = {
-      fps,
-      w: width,
-      h: height,
-      videoStreamSize: 0,
-      maxJPEGSize: 0
-    };
+    this.reset();
+  }
 
+  reset () {
+    this.avi = null;
+    this.headerLIST = null;
+    this.moviLIST = null;
     this.frameList = [];
     this.frameIndices = [];
     this.indexChunk = {};
 
-    this.builder = new AVIBuilder(encodingOpts);
+    this.movieDesc = {
+      fps: this.fps,
+      w: this.width,
+      h: this.height,
+      videoStreamSize: 0,
+      maxJPEGSize: 0
+    };
+
+    this.builder = new AVIBuilder();
   }
 
   generate (data, next) {
     const frameDu = Math.floor(this.builder.settings.RateBase / this.movieDesc.fps);
-
-    console.debug('Generating AVI');
 
     this.avi = this.builder.createAVIStructure();
     this.headerLIST = this.builder.createHeaderLIST();
@@ -53,33 +60,28 @@ export default class VideoBuilder {
     this.builder.appendStructure(blobBuilder, this.avi);
     const blob = blobBuilder.getBlob('video/avi');
 
-    return next(blob);
+    return next ? next(blob) : this.download(blob, this.movieName, '.avi');
   }
 
-  prepareData (data) {
-    this.frameList = data.map((frame) => {
-      /*const base64 = new Base64();
-       const blobBuilder = new BlobBuilder();
-       const dataStart = frame.indexOf(',') + 1;
+  download (blob, name = 'unnamed', ext = '') {
+    ext = !ext.indexOf('.') ? ext.substr(1) : ext;
+    const fileExt = ext ? `.${ext}` : '';
+    const filename = `${name}${fileExt}`;
 
-       let arrayBuffer, Uint8ArrayBuffer, blob;
+    if (this.window.navigator.msSaveOrOpenBlob) {
+      this.window.navigator.msSaveOrOpenBlob(blob, filename);
+    } else {
+      let downloadLink = this.window.document.createElement("a");
+      downloadLink.href = this.window.URL.createObjectURL(blob);
+      downloadLink.download = filename;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
+  }
 
-       let bytes = base64.decode(frame.substring(dataStart));
-
-       if (bytes.length % 2) { // padding
-       bytes.push(0)
-       }
-
-       arrayBuffer = new ArrayBuffer(bytes.length);
-       Uint8ArrayBuffer = new Uint8Array(arrayBuffer);
-
-       for (let i = 0; i < bytes.length; i++) {
-       Uint8ArrayBuffer[i] = bytes[i];
-       }
-
-       blobBuilder.append(arrayBuffer);
-       blob = blobBuilder.getBlob('image/jpeg');*/
-
+  prepareData (data = []) {
+    this.frameList = data.map(frame => {
       this.movieDesc.videoStreamSize += frame.size;
 
       if (this.movieDesc.maxJPEGSize < frame.size) {
@@ -93,7 +95,7 @@ export default class VideoBuilder {
   }
 
   addFrames () {
-    this.moviLIST.aStreams = []; // @fixme: could this move to the constructor?
+    this.moviLIST.aStreams = [];
 
     const IndexEntryOrder = ['chId', 'dwFlags', 'dwOffset', 'dwLength']; // @fixme: Is this a setting/constant?
 

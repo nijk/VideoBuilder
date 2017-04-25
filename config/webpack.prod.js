@@ -4,14 +4,10 @@ var path = require('path');
 
 var rootPath = path.resolve(__dirname, '../');
 
-module.exports = Object.assign({}, baseConfig, {
-  output: {
-    path: rootPath,
-    publicPath: '/',
-    filename: 'main.js',
-    libraryTarget: 'umd',
-  },
-  plugins: baseConfig.plugins.concat([
+var plugins = baseConfig.plugins;
+
+if (process.env.NODE_ENV !== 'debug') {
+  plugins = baseConfig.plugins.concat([
     new webpack.optimize.UglifyJsPlugin({
       sourceMap: true,
       compress: {
@@ -19,5 +15,15 @@ module.exports = Object.assign({}, baseConfig, {
         drop_console: false,
       }
     }),
-  ]),
+  ]);
+}
+
+module.exports = Object.assign({}, baseConfig, {
+  output: {
+    path: rootPath,
+    publicPath: '/',
+    filename: 'main.js',
+    libraryTarget: 'umd',
+  },
+  plugins: plugins,
 });
