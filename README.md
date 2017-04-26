@@ -1,37 +1,40 @@
 This plugin is based on http://ushiroad.com/mjpeg/
 
-Javascript VideoBuilder (Video-builder.js) enables you to save your canvas animation into a single avi file.
+VideoBuilder enables you to save your canvas animation frames (image/jpeg) into a single avi file.
 
-At first, generate VideoBuilder and setup.
+Instantiate the VideoBuilder with a config object.
+```ecmascript 6
+let videoBuilder = new VideoBuilder({
+    width: 640,
+    height: 360,
+    fps: 30, // Optional
+    name: 'download-filename' // Optional. The file extension '.avi' will be added automatically
+});
+```
 
-    var builder = new VideoBuilder({
-        width  : 640,
-        height : 360,
-        fps    : 30
-    });
+Then capture frames from your canvas:
 
-Next, add frames.
+```ecmascript 6
+let $canvas = window.document.querySelector('.canvas-selector');
+let frames = []; // This will be used to store blob data from each frame of the canvas.
 
-    draw();
-    builder.addCanvasFrame(canvas);
-    
-    draw();
-    builder.addCanvasFrame(canvas);
-    
-    draw();
-    builder.addCanvasFrame(canvas);
-    
-     :
-     :
-     :
+// Animation loop
+  $canvas.toBlob(blob => frames.push(blob));
+```
 
-And then, finish to get URL for generated content.
+Generate the AVI, this will trigger a download in the browser:
 
-    builder.finish(function(generatedURL) {
-        let a = document.createElement("a");
-        document.body.appendChild(a);
-        a.style.display = 'none';
-        a.href = generatedURL;
-        a.download = 'video.avi';
-        a.click();
-    });
+```ecmascript 6
+videoBuilder.generate(frames);
+```
+
+Alternatively, you can provide a callback to get the AVI blob:
+
+```ecmascript 6
+videoBuilder.generate(frames, (blob) => {
+  // Do something else with the AVI blob
+  
+  // N.B. If you still want to download the AVI in the browser, then call
+  videoBuilder.download(blob, 'download-filename', '.avi');
+});
+```

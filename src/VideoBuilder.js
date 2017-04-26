@@ -3,7 +3,7 @@ import AVIBuilder from './AVIBuilder';
 import BlobBuilder from './BlobBuilder';
 
 export default class VideoBuilder {
-  constructor (win = window, videoOpts = {}) {
+  constructor (videoOpts = {}, win = window) {
     const {
       fps = 30,
       width = 0,

@@ -14,7 +14,7 @@ class Demo {
     this.demo = this.window.document.querySelector('.demo');
     this.canvas = this.window.document.querySelector('canvas');
     this.ctx = this.canvas.getContext('2d');
-    this.videoBuilder = new VideoBuilder(this.window, { width, height, fps, name: this.downloadName });
+    this.videoBuilder = new VideoBuilder({ width, height, fps, name: this.downloadName }, this.window);
     this.animation = null;
     this.frames = [];
     this.isPlaying = false;
